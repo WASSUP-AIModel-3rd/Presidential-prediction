@@ -43,13 +43,13 @@ def crawl_nomination_speech(url="https://www.presidency.ucsb.edu/documents/presi
 
 def crawl_campaign_speech(url="https://www.presidency.ucsb.edu/documents/presidential-documents-archive-guidebook/documents-related-to-presidential-elections/2016/report/200320/all/63/205", year=2024, save=False, save_path='./campaign_speech.csv'):
     main_url = url
+    speech_list = {'name': [], 'date': [], 'speech': []}
 
     while main_url:
         html = requests.get(main_url)
 
         soup = BeautifulSoup(html.text, 'lxml')
 
-        speech_list = {'name': [], 'date': [], 'speech': []}
         page_list = soup.select_one("#block-system-main > div > div.view-content > div > table").find('tbody')
 
         for row in tqdm(page_list.find_all('tr')):
@@ -95,13 +95,13 @@ def crawl_campaign_speech(url="https://www.presidency.ucsb.edu/documents/preside
 
 def crawl_campaign_speech_from_search(url="https://www.presidency.ucsb.edu/advanced-search?field-keywords=&field-keywords2=&field-keywords3=&from%5Bdate%5D=&to%5Bdate%5D=&person2=200299&items_per_page=25&f%5B0%5D=field_docs_attributes%3A205", year=2024, save=False, save_path='./campaign_speech.csv'):
     main_url = url
+    speech_list = {'name': [], 'date': [], 'speech': []}
 
     while main_url:
         html = requests.get(main_url)
 
         soup = BeautifulSoup(html.text, 'lxml')
-
-        speech_list = {'name': [], 'date': [], 'speech': []}
+        
         page_list = soup.select_one("#block-system-main > div > div.view-content > table").find('tbody')
 
         for row in tqdm(page_list.find_all('tr')):
@@ -183,7 +183,7 @@ def crawl_debate(url="https://www.presidency.ucsb.edu/documents/presidential-doc
                 speech = [t.text for t in content.find_all('p')]
                 speech_list['date'].append(date)
                 speech_list['speech'].append(speech)
-                
+
     speech_df = pd.DataFrame(speech_list)
 
     if save:
